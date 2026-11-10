@@ -61,6 +61,19 @@ class AppTheme {
         backgroundColor: _primary,
         foregroundColor: _background,
       ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: _primary,
+          foregroundColor: _background,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          textStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
+      ),
     );
   }
 }

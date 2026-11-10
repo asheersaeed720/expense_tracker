@@ -1,7 +1,9 @@
 import 'package:expense_tracker/config/router/go_router_refresh.dart';
 import 'package:expense_tracker/config/router/route_paths.dart';
 import 'package:expense_tracker/config/supabase/supabase_bootstrap.dart';
+import 'package:expense_tracker/features/auth/screens/forgot_password_screen.dart';
 import 'package:expense_tracker/features/auth/screens/login_screen.dart';
+import 'package:expense_tracker/features/auth/screens/sign_up_screen.dart';
 import 'package:expense_tracker/features/auth/screens/splash_screen.dart';
 import 'package:expense_tracker/features/dashboard/screens/dashboard_screen.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +28,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: RoutePaths.login,
         name: 'login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.signUp,
+        name: 'signUp',
+        builder: (context, state) => const SignUpScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.forgotPassword,
+        name: 'forgotPassword',
+        builder: (context, state) => const ForgotPasswordScreen(),
       ),
       GoRoute(
         path: RoutePaths.dashboard,

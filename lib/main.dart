@@ -9,9 +9,5 @@ Future<void> main() async {
   await dotenv.load(fileName: '.env');
   await initializeSupabase();
 
-  runApp(
-    const ProviderScope(
-      child: KharchaApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: KharchaApp()));
 }
