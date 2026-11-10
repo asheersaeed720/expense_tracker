@@ -1,5 +1,5 @@
 name: expense_tracker
-description: Kharcha — personal expense tracker with Supabase backend.
+description: Expense Tracker — personal expense tracker with Supabase backend.
 publish_to: 'none'
 
 version: 1.0.0+1

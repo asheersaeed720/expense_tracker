@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:expense_tracker/config/constants/app_constants.dart';
 import 'package:expense_tracker/config/supabase/supabase_bootstrap.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -29,7 +30,7 @@ class DataExportService {
         .order('created_at', ascending: false);
 
     final buffer = StringBuffer()
-      ..writeln('Kharcha Data Export')
+      ..writeln('${AppConstants.appName} Data Export')
       ..writeln('Generated,${DateTime.now().toIso8601String()}')
       ..writeln()
       ..writeln('--- Transactions ---')
@@ -69,14 +70,14 @@ class DataExportService {
 
     final dir = await getTemporaryDirectory();
     final file = File(
-      '${dir.path}/kharcha_export_${DateTime.now().millisecondsSinceEpoch}.csv',
+      '${dir.path}/expense_tracker_export_${DateTime.now().millisecondsSinceEpoch}.csv',
     );
     await file.writeAsString(buffer.toString());
 
     await Share.shareXFiles(
       [XFile(file.path)],
-      subject: 'Kharcha export',
-      text: 'Your Kharcha transactions and loans',
+      subject: '${AppConstants.appName} export',
+      text: 'Your ${AppConstants.appName} transactions and loans',
     );
   }
 
