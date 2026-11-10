@@ -7,7 +7,11 @@ import 'package:expense_tracker/features/auth/screens/login_screen.dart';
 import 'package:expense_tracker/features/auth/screens/sign_up_screen.dart';
 import 'package:expense_tracker/features/auth/screens/splash_screen.dart';
 import 'package:expense_tracker/features/dashboard/screens/dashboard_screen.dart';
+import 'package:expense_tracker/core/enums/loan_type.dart';
+import 'package:expense_tracker/features/loans/screens/loan_detail_screen.dart';
+import 'package:expense_tracker/features/loans/screens/loan_form_screen.dart';
 import 'package:expense_tracker/features/loans/screens/loans_screen.dart';
+import 'package:expense_tracker/features/reports/screens/reports_screen.dart';
 import 'package:expense_tracker/features/settings/screens/settings_screen.dart';
 import 'package:expense_tracker/features/shell/main_shell_screen.dart';
 import 'package:expense_tracker/features/categories/screens/categories_screen.dart';
@@ -106,6 +110,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const CategoriesScreen(),
       ),
       GoRoute(
+        path: RoutePaths.reports,
+        name: 'reports',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const ReportsScreen(),
+      ),
+      GoRoute(
         path: RoutePaths.transactionForm,
         name: 'transactionForm',
         parentNavigatorKey: rootNavigatorKey,
@@ -120,6 +130,30 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => TransactionDetailScreen(
           transactionId: state.pathParameters['id']!,
+        ),
+      ),
+      GoRoute(
+        path: RoutePaths.loanForm,
+        name: 'loanForm',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          final id = state.uri.queryParameters['id'];
+          final typeRaw = state.uri.queryParameters['type'];
+          LoanType? initialType;
+          if (typeRaw == LoanType.taken.value) {
+            initialType = LoanType.taken;
+          } else if (typeRaw == LoanType.given.value) {
+            initialType = LoanType.given;
+          }
+          return LoanFormScreen(loanId: id, initialType: initialType);
+        },
+      ),
+      GoRoute(
+        path: '${RoutePaths.loanDetail}/:id',
+        name: 'loanDetail',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => LoanDetailScreen(
+          loanId: state.pathParameters['id']!,
         ),
       ),
     ],

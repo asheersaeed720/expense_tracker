@@ -5,6 +5,7 @@ import 'package:expense_tracker/core/widgets/app_loading_indicator.dart';
 import 'package:expense_tracker/features/accounts/providers/accounts_providers.dart';
 import 'package:expense_tracker/features/dashboard/providers/dashboard_refresh.dart';
 import 'package:expense_tracker/features/dashboard/widgets/account_summary_carousel.dart';
+import 'package:expense_tracker/features/dashboard/widgets/monthly_expense_overview_card.dart';
 import 'package:expense_tracker/features/dashboard/widgets/monthly_stats_row.dart';
 import 'package:expense_tracker/features/dashboard/widgets/recent_transactions_section.dart';
 import 'package:expense_tracker/features/dashboard/widgets/total_balance_card.dart';
@@ -99,6 +100,10 @@ class DashboardScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 MonthlyStatsRow(stats: stats, currency: currency),
+                const SizedBox(height: 20),
+                MonthlyExpenseOverviewCard(
+                  onViewReports: () => context.push(RoutePaths.reports),
+                ),
                 const SizedBox(height: 20),
                 RecentTransactionsSection(
                   transactions: recent,

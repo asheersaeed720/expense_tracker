@@ -169,6 +169,7 @@ class AccountsScreen extends ConsumerWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'fab-accounts',
         onPressed: () => _openCreateSheet(context, ref),
         child: const Icon(Icons.add),
       ),

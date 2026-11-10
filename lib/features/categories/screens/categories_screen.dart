@@ -25,6 +25,7 @@ class CategoriesScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Categories')),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'fab-categories',
         onPressed: () => _openCreate(context, ref),
         child: const Icon(Icons.add),
       ),

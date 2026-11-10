@@ -20,4 +20,13 @@ class RoutePaths {
 
   static String transactionFormEditPath(String id) =>
       '$transactionForm?id=$id';
+
+  static const String loanForm = '/loan/form';
+  static const String loanDetail = '/loan';
+
+  static String loanDetailPath(String id) => '$loanDetail/$id';
+
+  static String loanFormEditPath(String id) => '$loanForm?id=$id';
+
+  static const String reports = '/reports';
 }
