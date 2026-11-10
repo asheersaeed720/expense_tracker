@@ -1,7 +1,7 @@
 import 'package:expense_tracker/config/router/route_paths.dart';
 import 'package:expense_tracker/core/models/monthly_stats.dart';
 import 'package:expense_tracker/core/utils/date_formatter.dart';
-import 'package:expense_tracker/core/widgets/app_loading_indicator.dart';
+import 'package:expense_tracker/core/widgets/app_shimmer_list.dart';
 import 'package:expense_tracker/features/accounts/providers/accounts_providers.dart';
 import 'package:expense_tracker/features/dashboard/providers/dashboard_refresh.dart';
 import 'package:expense_tracker/features/dashboard/widgets/account_summary_carousel.dart';
@@ -42,8 +42,9 @@ class DashboardScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () => refreshDashboard(ref),
         child: accountsAsync.when(
-          loading: () => const AppLoadingIndicator(
-            message: 'Loading dashboard…',
+          loading: () => const Padding(
+            padding: EdgeInsets.all(16),
+            child: AppShimmerList(itemCount: 4, itemHeight: 88),
           ),
           error: (error, _) => _ErrorState(
             message: error.toString(),

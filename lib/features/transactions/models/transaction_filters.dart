@@ -13,6 +13,7 @@ class TransactionFilters {
     this.customEnd,
     this.type,
     this.accountId,
+    this.searchQuery,
   });
 
   final TransactionDatePreset datePreset;
@@ -20,6 +21,7 @@ class TransactionFilters {
   final DateTime? customEnd;
   final TransactionType? type;
   final String? accountId;
+  final String? searchQuery;
 
   TransactionFilters copyWith({
     TransactionDatePreset? datePreset,
@@ -27,8 +29,10 @@ class TransactionFilters {
     DateTime? customEnd,
     TransactionType? type,
     String? accountId,
+    String? searchQuery,
     bool clearType = false,
     bool clearAccount = false,
+    bool clearSearch = false,
   }) {
     return TransactionFilters(
       datePreset: datePreset ?? this.datePreset,
@@ -36,6 +40,7 @@ class TransactionFilters {
       customEnd: customEnd ?? this.customEnd,
       type: clearType ? null : (type ?? this.type),
       accountId: clearAccount ? null : (accountId ?? this.accountId),
+      searchQuery: clearSearch ? null : (searchQuery ?? this.searchQuery),
     );
   }
 
@@ -64,7 +69,8 @@ class TransactionFilters {
         _sameDay(other.customStart, customStart) &&
         _sameDay(other.customEnd, customEnd) &&
         other.type == type &&
-        other.accountId == accountId;
+        other.accountId == accountId &&
+        other.searchQuery == searchQuery;
   }
 
   @override
@@ -74,6 +80,7 @@ class TransactionFilters {
         customEnd?.millisecondsSinceEpoch,
         type,
         accountId,
+        searchQuery,
       );
 
   static bool _sameDay(DateTime? a, DateTime? b) {

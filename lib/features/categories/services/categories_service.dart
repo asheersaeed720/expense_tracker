@@ -68,6 +68,24 @@ class CategoriesService {
     }).eq('id', id);
   }
 
+  Future<void> seedDefaultCategories(String userId) async {
+    await _client.from('categories').insert([
+      {'user_id': userId, 'name': 'Food', 'icon': 'restaurant', 'type': 'expense', 'color': '#FF6B6B'},
+      {'user_id': userId, 'name': 'Transport', 'icon': 'directions_car', 'type': 'expense', 'color': '#4ECDC4'},
+      {'user_id': userId, 'name': 'Shopping', 'icon': 'shopping_bag', 'type': 'expense', 'color': '#FFE66D'},
+      {'user_id': userId, 'name': 'Bills', 'icon': 'receipt_long', 'type': 'expense', 'color': '#95E1D3'},
+      {'user_id': userId, 'name': 'Health', 'icon': 'local_hospital', 'type': 'expense', 'color': '#F38181'},
+      {'user_id': userId, 'name': 'Entertainment', 'icon': 'movie', 'type': 'expense', 'color': '#AA96DA'},
+      {'user_id': userId, 'name': 'Education', 'icon': 'school', 'type': 'expense', 'color': '#6C5CE7'},
+      {'user_id': userId, 'name': 'Other', 'icon': 'more_horiz', 'type': 'expense', 'color': '#A0A0A0'},
+      {'user_id': userId, 'name': 'Salary', 'icon': 'payments', 'type': 'income', 'color': '#00B894'},
+      {'user_id': userId, 'name': 'Freelance', 'icon': 'laptop', 'type': 'income', 'color': '#0984E3'},
+      {'user_id': userId, 'name': 'Business', 'icon': 'store', 'type': 'income', 'color': '#FDCB6E'},
+      {'user_id': userId, 'name': 'Gift', 'icon': 'card_giftcard', 'type': 'income', 'color': '#E17055'},
+      {'user_id': userId, 'name': 'Other', 'icon': 'more_horiz', 'type': 'income', 'color': '#A0A0A0'},
+    ]);
+  }
+
   Future<void> deleteCategory(String id) async {
     final category = await _client
         .from('categories')

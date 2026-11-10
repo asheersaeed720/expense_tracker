@@ -1,5 +1,8 @@
 import 'package:expense_tracker/config/router/route_paths.dart';
+import 'package:expense_tracker/core/utils/app_haptics.dart';
 import 'package:expense_tracker/core/utils/app_snackbar.dart';
+import 'package:expense_tracker/core/widgets/app_empty_state.dart';
+import 'package:expense_tracker/core/widgets/app_shimmer_list.dart';
 import 'package:expense_tracker/features/accounts/providers/accounts_providers.dart';
 import 'package:expense_tracker/features/transactions/providers/transactions_list_provider.dart';
 import 'package:expense_tracker/features/transactions/providers/transactions_providers.dart';
@@ -42,8 +45,9 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
   }
 
   Future<void> _openAdd() async {
+    await AppHaptics.light();
     final created = await context.push<bool>(RoutePaths.transactionForm);
-    if (created == true) {
+    if (created == true && mounted) {
       await ref.read(transactionsListProvider.notifier).refresh();
     }
   }
@@ -68,6 +72,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
     );
 
     if (confirmed != true) return false;
+
+    await AppHaptics.medium();
 
     try {
       await ref.read(transactionsServiceProvider).deleteTransaction(id);
@@ -102,17 +108,32 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         child: listState.isLoading && listState.items.isEmpty
             ? ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                children: const [
-                  SizedBox(
-                    height: 240,
-                    child: Center(child: CircularProgressIndicator()),
-                  ),
-                ],
+                padding: const EdgeInsets.all(16),
+                children: const [AppShimmerList()],
               )
             : CustomScrollView(
                 controller: _scrollController,
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.search),
+                          hintText: 'Search description, category, amount…',
+                          isDense: true,
+                        ),
+                        onChanged: (value) {
+                          ref.read(transactionFiltersProvider.notifier).state =
+                              filters.copyWith(
+                            searchQuery: value.trim().isEmpty ? null : value.trim(),
+                            clearSearch: value.trim().isEmpty,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
@@ -135,9 +156,15 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                     ),
                   ),
                   if (listState.items.isEmpty)
-                    const SliverFillRemaining(
+                    SliverFillRemaining(
                       hasScrollBody: false,
-                      child: Center(child: Text('No transactions for this filter.')),
+                      child: AppEmptyState(
+                        icon: Icons.receipt_long_outlined,
+                        title: 'No transactions found',
+                        subtitle: filters.searchQuery?.isNotEmpty == true
+                            ? 'Try another search or adjust filters.'
+                            : 'Tap + to add your first transaction.',
+                      ),
                     )
                   else
                     ...groups.expand((group) sync* {

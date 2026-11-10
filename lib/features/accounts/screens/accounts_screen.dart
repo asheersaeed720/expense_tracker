@@ -2,7 +2,8 @@ import 'package:expense_tracker/core/models/account.dart';
 import 'package:expense_tracker/core/utils/app_snackbar.dart';
 import 'package:expense_tracker/core/utils/currency_formatter.dart';
 import 'package:expense_tracker/core/utils/icon_name_mapper.dart';
-import 'package:expense_tracker/core/widgets/app_loading_indicator.dart';
+import 'package:expense_tracker/core/widgets/app_empty_state.dart';
+import 'package:expense_tracker/core/widgets/app_shimmer_list.dart';
 import 'package:expense_tracker/features/accounts/providers/accounts_providers.dart';
 import 'package:expense_tracker/features/accounts/widgets/account_form_sheet.dart';
 import 'package:expense_tracker/features/accounts/widgets/transfer_sheet.dart';
@@ -174,11 +175,18 @@ class AccountsScreen extends ConsumerWidget {
         child: const Icon(Icons.add),
       ),
       body: accountsAsync.when(
-        loading: () => const AppLoadingIndicator(message: 'Loading accounts…'),
+        loading: () => const Padding(
+          padding: EdgeInsets.all(16),
+          child: AppShimmerList(),
+        ),
         error: (e, _) => Center(child: Text(e.toString())),
         data: (accounts) {
           if (accounts.isEmpty) {
-            return const Center(child: Text('No accounts yet.'));
+            return const AppEmptyState(
+              icon: Icons.account_balance_wallet_outlined,
+              title: 'No accounts yet',
+              subtitle: 'Tap + to add your first account.',
+            );
           }
 
           return ListView.separated(
