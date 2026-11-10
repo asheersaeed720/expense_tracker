@@ -52,8 +52,8 @@ class _LoansScreenState extends ConsumerState<LoansScreen>
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
-            Tab(text: 'Given'),
             Tab(text: 'Taken'),
+            Tab(text: 'Given'),
           ],
         ),
       ),
@@ -61,7 +61,7 @@ class _LoansScreenState extends ConsumerState<LoansScreen>
         heroTag: 'fab-loans',
         onPressed: () {
           final type =
-              _tabController.index == 0 ? LoanType.given : LoanType.taken;
+              _tabController.index == 0 ? LoanType.taken : LoanType.given;
           _openAdd(type);
         },
         child: const Icon(Icons.add),
@@ -69,8 +69,8 @@ class _LoansScreenState extends ConsumerState<LoansScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          _LoansTab(type: LoanType.given, currency: currency),
           _LoansTab(type: LoanType.taken, currency: currency),
+          _LoansTab(type: LoanType.given, currency: currency),
         ],
       ),
     );
