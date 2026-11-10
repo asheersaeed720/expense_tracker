@@ -5,7 +5,7 @@ import 'package:expense_tracker/features/auth/providers/auth_controller.dart';
 import 'package:expense_tracker/features/auth/widgets/auth_primary_button.dart';
 import 'package:expense_tracker/features/auth/widgets/auth_screen_layout.dart';
 import 'package:expense_tracker/features/auth/widgets/auth_text_field.dart';
-import 'package:expense_tracker/features/auth/widgets/kharcha_logo.dart';
+import 'package:expense_tracker/features/auth/widgets/expense_tracker_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -61,7 +61,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Center(child: KharchaLogo(showTitle: false, size: 72)),
+            const Center(child: ExpenseTrackerLogo(showTitle: false, size: 72)),
             const SizedBox(height: 28),
             AuthTextField(
               controller: _emailController,

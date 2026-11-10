@@ -1,8 +1,8 @@
 import 'package:expense_tracker/config/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 
-class KharchaLogo extends StatelessWidget {
-  const KharchaLogo({super.key, this.size = 88, this.showTitle = true});
+class ExpenseTrackerLogo extends StatelessWidget {
+  const ExpenseTrackerLogo({super.key, this.size = 88, this.showTitle = true});
 
   final double size;
   final bool showTitle;

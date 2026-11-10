@@ -8,7 +8,7 @@
 ## Phase 0 — Project Scaffolding & Supabase Schema
 
 ```text
-Create a Flutter expense tracker app called "Kharcha" with Supabase backend.
+Create a Flutter expense tracker app called "Expense Tracker" with Supabase backend.
 
 ## Project Setup
 - Flutter project with clean architecture (lib/core, lib/features, lib/config)
@@ -111,7 +111,7 @@ Output the complete migration SQL file and all the Flutter scaffolding files.
 ## Phase 1 — Authentication
 
 ```text
-Implement authentication for the Kharcha expense tracker app using Supabase Auth.
+Implement authentication for the Expense Tracker app using Supabase Auth.
 
 ## Screens
 1. **Splash Screen** — check if user is logged in, redirect accordingly. Show app logo centered.
@@ -138,7 +138,7 @@ Do NOT modify the database schema. Use the existing tables.
 ## Phase 2 — Dashboard & Account Balances
 
 ```text
-Build the Dashboard and Account management screens for the Kharcha app.
+Build the Dashboard and Account management screens for the Expense Tracker app.
 
 ## Dashboard Screen (Home)
 This is the main screen after login. It should show:
@@ -175,7 +175,7 @@ Use clean card-based dark theme UI. All amounts formatted as PKR.
 ## Phase 3 — Expense & Income Tracking (Transactions)
 
 ```text
-Build the full Transactions feature for the Kharcha app.
+Build the full Transactions feature for the Expense Tracker app.
 
 ## Add Transaction Screen
 A bottom sheet or full screen form with:
@@ -221,7 +221,7 @@ All UI in dark theme. Amounts formatted with PKR and commas.
 ## Phase 4 — Loans Management
 
 ```text
-Build the Loans feature for the Kharcha app.
+Build the Loans feature for the Expense Tracker app.
 
 ## Loans List Screen (Tab 3)
 - **Two tabs** at top: "Given" (I lent money) and "Taken" (I borrowed money)
@@ -275,7 +275,7 @@ Dark theme. PKR formatting. Show empty state illustrations when no loans exist.
 ## Phase 5 — Reports & Charts
 
 ```text
-Add a Reports section to the Kharcha app Dashboard.
+Add a Reports section to the Expense Tracker app Dashboard.
 
 ## Reports (accessible from Dashboard via a "View Reports" button or a dedicated section)
 
@@ -308,7 +308,7 @@ Keep the dark theme consistent. All amounts in PKR.
 ## Phase 6 — Settings & Polish
 
 ```text
-Build the Settings screen and final polish for the Kharcha app.
+Build the Settings screen and final polish for the Expense Tracker app.
 
 ## Settings Screen (Tab 4)
 
@@ -368,7 +368,7 @@ Build the Settings screen and final polish for the Kharcha app.
 ## Phase 7 — Urdu Localization (Optional)
 
 ```text
-Add Urdu language support to the Kharcha app.
+Add Urdu language support to the Expense Tracker app.
 
 ## Setup
 - Add flutter_localizations and intl packages (if not already)
@@ -423,4 +423,4 @@ Test the entire app in Urdu — every screen, every dialog, every error message.
 > **After each phase**, tell Cursor: *"Review the code for bugs, fix any compile errors, and make sure the app runs without crashes."* This prevents error accumulation across phases.
 
 > [!TIP]
-> If Cursor's context gets too long mid-phase, start a new chat and say: *"Continue building the Kharcha app. I've completed Phase X. Now implement Phase Y. Here's the current project structure: [paste tree output]"*
+> If Cursor's context gets too long mid-phase, start a new chat and say: *"Continue building the Expense Tracker app. I've completed Phase X. Now implement Phase Y. Here's the current project structure: [paste tree output]"*

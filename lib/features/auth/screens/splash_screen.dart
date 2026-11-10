@@ -1,5 +1,5 @@
 import 'package:expense_tracker/core/widgets/app_loading_indicator.dart';
-import 'package:expense_tracker/features/auth/widgets/kharcha_logo.dart';
+import 'package:expense_tracker/features/auth/widgets/expense_tracker_logo.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -12,7 +12,7 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            KharchaLogo(showTitle: true),
+            ExpenseTrackerLogo(showTitle: true),
             SizedBox(height: 32),
             AppLoadingIndicator(),
           ],

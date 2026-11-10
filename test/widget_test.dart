@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
-  testWidgets('Kharcha app loads login placeholder', (WidgetTester tester) async {
+  testWidgets('Expense Tracker app loads login placeholder', (WidgetTester tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -24,7 +24,7 @@ void main() {
             ),
           ),
         ],
-        child: const KharchaApp(),
+        child: const ExpenseTrackerApp(),
       ),
     );
 

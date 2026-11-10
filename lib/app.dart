@@ -7,8 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class KharchaApp extends ConsumerWidget {
-  const KharchaApp({super.key});
+class ExpenseTrackerApp extends ConsumerWidget {
+  const ExpenseTrackerApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

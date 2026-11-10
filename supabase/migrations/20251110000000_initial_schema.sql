@@ -1,4 +1,4 @@
--- Kharcha expense tracker — initial schema
+-- Expense Tracker — initial schema
 
 -- ---------------------------------------------------------------------------
 -- Tables
