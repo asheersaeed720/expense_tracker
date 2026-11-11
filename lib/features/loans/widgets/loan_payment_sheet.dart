@@ -152,7 +152,10 @@ class _LoanPaymentSheetState extends State<LoanPaymentSheet> {
             ),
             TextFormField(
               controller: _noteController,
+              textAlignVertical: TextAlignVertical.top,
               decoration: const InputDecoration(labelText: 'Note (optional)'),
+              minLines: 2,
+              maxLines: 4,
             ),
             const SizedBox(height: 20),
             Row(

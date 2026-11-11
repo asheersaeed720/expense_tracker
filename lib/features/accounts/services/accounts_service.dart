@@ -60,6 +60,8 @@ class AccountsService {
       'name': name.trim(),
       'type': type.value,
       'balance': initialBalance,
+      'opening_balance': initialBalance,
+      'initial_balance': initialBalance,
       'is_default': false,
     });
   }
@@ -104,6 +106,69 @@ class AccountsService {
     }
 
     await _client.from('accounts').delete().eq('id', accountId);
+  }
+
+  /// Sets each account [balance] from [opening_balance] plus that account's
+  /// transactions (income adds, expense subtracts). Works even when Supabase
+  /// delete/update balance triggers are missing or stale.
+  Future<void> reconcileBalancesFromTransactions() async {
+    final userId = _userId;
+    if (userId == null) throw const AuthException('Not signed in');
+
+    List<Map<String, dynamic>> accounts;
+    try {
+      accounts = List<Map<String, dynamic>>.from(
+        await _client
+            .from('accounts')
+            .select('id, initial_balance, opening_balance, balance')
+            .eq('user_id', userId),
+      );
+    } on PostgrestException {
+      accounts = List<Map<String, dynamic>>.from(
+        await _client
+            .from('accounts')
+            .select('id, balance')
+            .eq('user_id', userId),
+      );
+    }
+
+    final txs = List<Map<String, dynamic>>.from(
+      await _client
+          .from('transactions')
+          .select('account_id, type, amount')
+          .eq('user_id', userId),
+    );
+
+    final netByAccount = <String, double>{};
+    for (final row in txs) {
+      final accountId = row['account_id'] as String;
+      final amount = (row['amount'] as num).toDouble();
+      final delta = row['type'] == 'income' ? amount : -amount;
+      netByAccount[accountId] = (netByAccount[accountId] ?? 0) + delta;
+    }
+
+    for (final acc in accounts) {
+      final id = acc['id'] as String;
+      final net = netByAccount[id] ?? 0;
+
+      double initial = 0;
+      if (acc.containsKey('initial_balance')) {
+        initial = (acc['initial_balance'] as num?)?.toDouble() ?? 0;
+      } else {
+        final txCount = txs.where((t) => t['account_id'] == id).length;
+        if (txCount == 0) {
+          initial = (acc['balance'] as num?)?.toDouble() ?? 0;
+        }
+      }
+      if (initial < 0) initial = 0;
+
+      final newBalance = initial + net;
+      final update = <String, dynamic>{'balance': newBalance};
+      if (acc.containsKey('opening_balance')) {
+        update['opening_balance'] = 0;
+      }
+      await _client.from('accounts').update(update).eq('id', id);
+    }
   }
 
   Future<void> transferBetweenAccounts({
@@ -158,5 +223,7 @@ class AccountsService {
         'date': today,
       },
     ]);
+
+    await reconcileBalancesFromTransactions();
   }
 }

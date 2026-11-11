@@ -59,6 +59,7 @@ Apply the SQL migrations in order:
 
 1. `supabase/migrations/20251110000000_initial_schema.sql` — profiles, accounts, categories, transactions, loans, RLS, and triggers
 2. `supabase/migrations/20251110120000_transaction_balance_update_delete.sql` — balance updates on transaction changes
+3. `supabase/migrations/20251111100000_account_opening_balance_reconcile.sql` — opening balance + **Fix account balances** in Settings
 
 You can run these in the Supabase SQL editor or with the [Supabase CLI](https://supabase.com/docs/guides/cli) linked to your project.
 
@@ -116,4 +117,4 @@ Private project (`publish_to: 'none'`). Not published to pub.dev.
 
 ---
 
-Built by Asheer · App display name: **Expense Tracker**
+App display name: **Expense Tracker**

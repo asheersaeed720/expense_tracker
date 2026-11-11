@@ -99,6 +99,40 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
     if (picked != null) setState(() => _date = picked);
   }
 
+  Future<bool> _confirmExpenseExceedsBalance(
+    double amount,
+    List<Account> accounts,
+  ) async {
+    if (_type != TransactionType.expense) return true;
+
+    final account = accounts.where((a) => a.id == _accountId).firstOrNull;
+    if (account == null || amount <= account.balance) return true;
+
+    final proceed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Expense exceeds balance'),
+        content: Text(
+          '${account.name} has ${account.balance.toStringAsFixed(0)} available, '
+          'but this expense is ${amount.toStringAsFixed(0)}.\n\n'
+          'The app allows negative balances (like a ledger). '
+          'If you meant another account, change it before saving.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Go back'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Save anyway'),
+          ),
+        ],
+      ),
+    );
+    return proceed == true;
+  }
+
   Future<void> _save() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     if (_accountId == null) {
@@ -111,6 +145,9 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
     }
 
     final amount = double.parse(_amountController.text.trim());
+    final accounts = ref.read(accountsProvider).valueOrNull ?? const <Account>[];
+    if (!await _confirmExpenseExceedsBalance(amount, accounts)) return;
+
     final service = ref.read(transactionsServiceProvider);
 
     setState(() => _isLoading = true);
@@ -265,10 +302,12 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
             const SizedBox(height: 8),
             TextFormField(
               controller: _descriptionController,
+              textAlignVertical: TextAlignVertical.top,
               decoration: const InputDecoration(
                 labelText: 'Description (optional)',
               ),
-              maxLines: 2,
+              minLines: 2,
+              maxLines: 4,
             ),
             const SizedBox(height: 24),
             FilledButton(

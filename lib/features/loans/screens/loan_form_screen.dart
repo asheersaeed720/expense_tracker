@@ -234,9 +234,11 @@ class _LoanFormScreenState extends ConsumerState<LoanFormScreen> {
             const SizedBox(height: 8),
             TextFormField(
               controller: _descriptionController,
+              textAlignVertical: TextAlignVertical.top,
               decoration:
                   const InputDecoration(labelText: 'Description (optional)'),
-              maxLines: 2,
+              minLines: 2,
+              maxLines: 4,
             ),
             const SizedBox(height: 8),
             ListTile(

@@ -29,4 +29,13 @@ class RoutePaths {
   static String loanFormEditPath(String id) => '$loanForm?id=$id';
 
   static const String reports = '/reports';
+
+  static const String company = '/company';
+  static const String companyTransactions = '/company/transactions';
+  static const String companyTxForm = '/company/tx/form';
+
+  static String companyTxFormEdit(String id) => '$companyTxForm?id=$id';
+
+  static String companyTxFormIntent(String intent) =>
+      '$companyTxForm?intent=$intent';
 }

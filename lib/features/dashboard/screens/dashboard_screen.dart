@@ -3,6 +3,8 @@ import 'package:expense_tracker/core/models/monthly_stats.dart';
 import 'package:expense_tracker/core/utils/date_formatter.dart';
 import 'package:expense_tracker/core/widgets/app_shimmer_list.dart';
 import 'package:expense_tracker/features/accounts/providers/accounts_providers.dart';
+import 'package:expense_tracker/features/company/providers/company_providers.dart';
+import 'package:expense_tracker/features/company/widgets/workspace_switcher_pill.dart';
 import 'package:expense_tracker/features/dashboard/providers/dashboard_refresh.dart';
 import 'package:expense_tracker/features/dashboard/widgets/account_summary_carousel.dart';
 import 'package:expense_tracker/features/dashboard/widgets/monthly_expense_overview_card.dart';
@@ -27,10 +29,23 @@ class DashboardScreen extends ConsumerWidget {
 
     final currency = profileAsync.valueOrNull?.currency ?? 'PKR';
     final name = profileAsync.valueOrNull?.displayName ?? 'there';
+    final companyOn = profileAsync.valueOrNull?.companyModeEnabled == true;
+    final companyLedger = companyOn
+        ? ref.watch(companyLedgerProvider).valueOrNull
+        : null;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
+        bottom: companyLedger == null
+            ? null
+            : PreferredSize(
+                preferredSize: const Size.fromHeight(48),
+                child: WorkspaceSwitcherPill(
+                  companyName: companyLedger.companyName,
+                  onCompany: () => context.push(RoutePaths.company),
+                ),
+              ),
         actions: [
           IconButton(
             tooltip: 'Manage accounts',

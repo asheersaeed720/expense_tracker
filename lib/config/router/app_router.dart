@@ -14,7 +14,11 @@ import 'package:expense_tracker/features/loans/screens/loans_screen.dart';
 import 'package:expense_tracker/features/reports/screens/reports_screen.dart';
 import 'package:expense_tracker/features/settings/screens/settings_screen.dart';
 import 'package:expense_tracker/features/shell/main_shell_screen.dart';
+import 'package:expense_tracker/core/enums/company_tx_type.dart';
 import 'package:expense_tracker/features/categories/screens/categories_screen.dart';
+import 'package:expense_tracker/features/company/screens/company_dashboard_screen.dart';
+import 'package:expense_tracker/features/company/screens/company_transactions_screen.dart';
+import 'package:expense_tracker/features/company/screens/company_tx_form_screen.dart';
 import 'package:expense_tracker/features/transactions/screens/transaction_detail_screen.dart';
 import 'package:expense_tracker/features/transactions/screens/transaction_form_screen.dart';
 import 'package:expense_tracker/features/transactions/screens/transactions_screen.dart';
@@ -146,6 +150,33 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             initialType = LoanType.given;
           }
           return LoanFormScreen(loanId: id, initialType: initialType);
+        },
+      ),
+      GoRoute(
+        path: RoutePaths.company,
+        name: 'company',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const CompanyDashboardScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.companyTransactions,
+        name: 'companyTransactions',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const CompanyTransactionsScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.companyTxForm,
+        name: 'companyTxForm',
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) {
+          final id = state.uri.queryParameters['id'];
+          final intent = state.uri.queryParameters['intent'];
+          return CompanyTxFormScreen(
+            transactionId: id,
+            initialType: intent == 'payout'
+                ? CompanyTxType.myWithdrawal
+                : CompanyTxType.income,
+          );
         },
       ),
       GoRoute(

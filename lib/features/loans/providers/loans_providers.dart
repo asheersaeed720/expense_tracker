@@ -25,14 +25,17 @@ typedef LoanDetailParams = ({String loanId});
 class LoanDetailNotifier extends AutoDisposeFamilyAsyncNotifier<LoanDetail?, LoanDetailParams> {
   @override
   Future<LoanDetail?> build(LoanDetailParams arg) async {
+    final detail =
+        await ref.read(loansServiceProvider).fetchLoanDetail(arg.loanId);
+
     final sub = ref
         .read(loansServiceProvider)
         .watchLoanChanges()
+        .skip(1)
         .listen((_) => ref.invalidateSelf());
-
     ref.onDispose(sub.cancel);
 
-    return ref.read(loansServiceProvider).fetchLoanDetail(arg.loanId);
+    return detail;
   }
 
   Future<void> refresh() async {

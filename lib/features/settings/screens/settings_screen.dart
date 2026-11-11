@@ -3,6 +3,8 @@ import 'package:expense_tracker/config/router/route_paths.dart';
 import 'package:expense_tracker/core/utils/app_haptics.dart';
 import 'package:expense_tracker/core/utils/app_snackbar.dart';
 import 'package:expense_tracker/features/accounts/providers/accounts_providers.dart';
+import 'package:expense_tracker/features/company/providers/company_providers.dart';
+import 'package:expense_tracker/features/company/widgets/company_setup_sheet.dart';
 import 'package:expense_tracker/features/settings/providers/settings_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +20,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   String? _appVersion;
+  bool _companyBusy = false;
 
   @override
   void initState() {
@@ -140,7 +143,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final steps = [
       (
         title: 'Delete all data?',
-        body: 'This removes transactions, loans, accounts, and custom categories.',
+        body:
+            'This removes transactions, loans, accounts, custom categories, and the company ledger.',
       ),
       (
         title: 'Are you absolutely sure?',
@@ -195,12 +199,52 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return confirmed == true;
   }
 
+  Future<void> _reconcileBalances() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Fix account balances?'),
+        content: const Text(
+          'Recalculates each account from its transactions.\n\n'
+          'If Cash in Hand is still wrong, open the Rs. 200 transaction, '
+          'set Account to Bank Account, save, then run this again.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Recalculate'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    try {
+      await ref.read(accountsServiceProvider).reconcileBalancesFromTransactions();
+      ref.invalidate(accountsProvider);
+      if (context.mounted) {
+        showAppSnackBar(context, message: 'Account balances updated.');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showAppSnackBar(context, message: e.toString(), isError: true);
+      }
+    }
+  }
+
   Future<void> _deleteAllData() async {
     if (!await _tripleConfirmDelete() || !mounted) return;
 
     try {
       await ref.read(dataPrivacyServiceProvider).deleteAllUserData();
       ref.invalidate(accountsProvider);
+      ref.invalidate(profileProvider);
+      ref.invalidate(companyLedgerProvider);
       if (context.mounted) {
         showAppSnackBar(context, message: 'All data deleted. Defaults restored.');
       }
@@ -208,6 +252,46 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       if (context.mounted) {
         showAppSnackBar(context, message: e.toString(), isError: true);
       }
+    }
+  }
+
+  Future<void> _setCompanyMode(bool enabled) async {
+    if (_companyBusy) return;
+    setState(() => _companyBusy = true);
+    try {
+      final service = ref.read(companyServiceProvider);
+      if (enabled) {
+        final ledger = await service.fetchLedger();
+        if (!mounted) return;
+        if (ledger == null) {
+          final result = await showCompanySetupSheet(context);
+          if (result == null || !mounted) return;
+          await service.createLedger(
+            companyName: result.companyName,
+            partnerName: result.partnerName,
+            mySharePercent: result.mySharePercent,
+          );
+          if (mounted) {
+            showAppSnackBar(context, message: 'Company workspace is on.');
+          }
+        } else {
+          await service.setCompanyMode(true);
+        }
+      } else {
+        await service.setCompanyMode(false);
+        if (mounted) {
+          showAppSnackBar(
+            context,
+            message: 'Company workspace hidden. Your company data is still saved.',
+          );
+        }
+      }
+      ref.invalidate(profileProvider);
+      ref.invalidate(companyLedgerProvider);
+    } catch (e) {
+      if (mounted) showAppSnackBar(context, message: e.toString(), isError: true);
+    } finally {
+      if (mounted) setState(() => _companyBusy = false);
     }
   }
 
@@ -274,13 +358,33 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           const Divider(height: 1),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text('Workspace', style: Theme.of(context).textTheme.titleSmall),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.business_outlined),
+            title: const Text('Company / Partner Ledger'),
+            subtitle: const Text(
+              'Track shared business income, expenses & partner splits separately',
+            ),
+            value: profile?.companyModeEnabled ?? false,
+            onChanged: profile == null || _companyBusy ? null : _setCompanyMode,
+          ),
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text('Data & privacy', style: Theme.of(context).textTheme.titleSmall),
           ),
           ListTile(
             leading: const Icon(Icons.download_outlined),
             title: const Text('Export CSV'),
-            subtitle: const Text('Transactions and loans'),
+            subtitle: const Text('Transactions, loans, and company ledger if you have one'),
             onTap: _exportData,
+          ),
+          ListTile(
+            leading: const Icon(Icons.sync_outlined),
+            title: const Text('Fix account balances'),
+            subtitle: const Text('Recalculate from your transactions'),
+            onTap: _reconcileBalances,
           ),
           ListTile(
             leading: Icon(Icons.delete_forever_outlined, color: Theme.of(context).colorScheme.error),
@@ -297,7 +401,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             leading: const Icon(Icons.info_outline),
             title: Text(AppConstants.appName),
             subtitle: Text(
-              'Version ${_appVersion ?? '…'} · Built by ${AppConstants.developerName}',
+              'Version ${_appVersion ?? '…'}',
             ),
           ),
           const SizedBox(height: 8),

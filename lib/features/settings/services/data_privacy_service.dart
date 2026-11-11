@@ -18,6 +18,12 @@ class DataPrivacyService {
     final userId = _userId;
     if (userId == null) throw const AuthException('Not signed in');
 
+    await _client.from('company_transactions').delete().eq('user_id', userId);
+    await _client.from('company_ledgers').delete().eq('user_id', userId);
+    await _client.from('profiles').update({
+      'company_mode_enabled': false,
+    }).eq('id', userId);
+
     await _client.from('loan_payments').delete().eq('user_id', userId);
     await _client.from('loans').delete().eq('user_id', userId);
     await _client.from('transactions').delete().eq('user_id', userId);

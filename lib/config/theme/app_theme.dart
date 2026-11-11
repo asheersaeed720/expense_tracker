@@ -44,6 +44,8 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: _surface,
+        alignLabelWithHint: true,
+        contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),

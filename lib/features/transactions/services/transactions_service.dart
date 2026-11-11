@@ -1,14 +1,18 @@
 import 'package:expense_tracker/config/supabase/supabase_bootstrap.dart';
 import 'package:expense_tracker/core/enums/transaction_type.dart';
+import 'package:expense_tracker/features/accounts/services/accounts_service.dart';
 import 'package:expense_tracker/core/models/monthly_stats.dart';
 import 'package:expense_tracker/core/models/transaction_item.dart';
 import 'package:expense_tracker/features/transactions/models/transaction_filters.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TransactionsService {
-  TransactionsService({SupabaseClient? client}) : _client = client ?? supabase;
+  TransactionsService({SupabaseClient? client, AccountsService? accountsService})
+      : _client = client ?? supabase,
+        _accountsService = accountsService ?? AccountsService(client: client);
 
   final SupabaseClient _client;
+  final AccountsService _accountsService;
 
   static const String _selectWithJoins =
       '*, categories(name, icon, color), accounts(name)';
@@ -161,6 +165,8 @@ class TransactionsService {
       'description': description?.trim().isEmpty == true ? null : description?.trim(),
       'date': _dateOnly(date),
     });
+
+    await _accountsService.reconcileBalancesFromTransactions();
   }
 
   Future<void> updateTransaction({
@@ -184,6 +190,8 @@ class TransactionsService {
       'description': description?.trim().isEmpty == true ? null : description?.trim(),
       'date': _dateOnly(date),
     }).eq('id', id).eq('user_id', userId);
+
+    await _accountsService.reconcileBalancesFromTransactions();
   }
 
   Future<void> deleteTransaction(String id) async {
@@ -191,6 +199,8 @@ class TransactionsService {
     if (userId == null) throw const AuthException('Not signed in');
 
     await _client.from('transactions').delete().eq('id', id).eq('user_id', userId);
+
+    await _accountsService.reconcileBalancesFromTransactions();
   }
 
   Future<MonthlyStats> fetchMonthlyStats() async {

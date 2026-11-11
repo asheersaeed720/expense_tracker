@@ -68,6 +68,9 @@ class DataExportService {
       ]));
     }
 
+    final companySection = await _companySection(userId);
+    if (companySection != null) buffer.write(companySection);
+
     final dir = await getTemporaryDirectory();
     final file = File(
       '${dir.path}/expense_tracker_export_${DateTime.now().millisecondsSinceEpoch}.csv',
@@ -79,6 +82,65 @@ class DataExportService {
       subject: '${AppConstants.appName} export',
       text: 'Your ${AppConstants.appName} transactions and loans',
     );
+  }
+
+  Future<void> exportCompanyCsv() async {
+    final userId = _userId;
+    if (userId == null) throw const AuthException('Not signed in');
+
+    final section = await _companySection(userId);
+    if (section == null) {
+      throw StateError('No company ledger to export.');
+    }
+
+    final buffer = StringBuffer()
+      ..writeln('${AppConstants.appName} Company Export')
+      ..writeln('Generated,${DateTime.now().toIso8601String()}')
+      ..write(section);
+
+    final dir = await getTemporaryDirectory();
+    final file = File(
+      '${dir.path}/company_export_${DateTime.now().millisecondsSinceEpoch}.csv',
+    );
+    await file.writeAsString(buffer.toString());
+    await Share.shareXFiles(
+      [XFile(file.path)],
+      subject: '${AppConstants.appName} company export',
+    );
+  }
+
+  Future<String?> _companySection(String userId) async {
+    final ledgers = await _client
+        .from('company_ledgers')
+        .select('id')
+        .eq('user_id', userId)
+        .limit(1);
+    if (ledgers.isEmpty) return null;
+
+    final rows = await _client
+        .from('company_transactions')
+        .select('date, type, amount, my_split_amount, partner_split_amount, category, description')
+        .eq('user_id', userId)
+        .order('date', ascending: false);
+
+    final buffer = StringBuffer()
+      ..writeln()
+      ..writeln('[COMPANY TRANSACTIONS]')
+      ..writeln('date,type,amount,my_split,partner_split,category,description');
+
+    for (final row in rows) {
+      buffer.writeln(_csvRow([
+        row['date'],
+        row['type'],
+        row['amount'],
+        row['my_split_amount'],
+        row['partner_split_amount'],
+        row['category'],
+        row['description'],
+      ]));
+    }
+
+    return buffer.toString();
   }
 
   String _csvRow(List<Object?> values) {
