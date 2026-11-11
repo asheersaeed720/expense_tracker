@@ -1,3 +1,4 @@
+import 'package:expense_tracker/core/providers/supabase_realtime_auth_binding.dart';
 import 'package:expense_tracker/core/enums/category_type.dart';
 import 'package:expense_tracker/core/models/category.dart';
 import 'package:expense_tracker/features/categories/services/categories_service.dart';
@@ -8,6 +9,7 @@ final categoriesServiceProvider = Provider<CategoriesService>((ref) {
 });
 
 final categoriesProvider = StreamProvider<List<Category>>((ref) {
+  bindSupabaseRealtimeAuth(ref);
   return ref.watch(categoriesServiceProvider).watchCategories();
 });
 

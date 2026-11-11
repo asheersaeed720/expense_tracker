@@ -1,5 +1,6 @@
 import 'package:expense_tracker/core/models/account.dart';
 import 'package:expense_tracker/core/models/user_profile.dart';
+import 'package:expense_tracker/core/providers/supabase_realtime_auth_binding.dart';
 import 'package:expense_tracker/features/accounts/services/accounts_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,6 +9,7 @@ final accountsServiceProvider = Provider<AccountsService>((ref) {
 });
 
 final accountsProvider = StreamProvider<List<Account>>((ref) {
+  bindSupabaseRealtimeAuth(ref);
   return ref.watch(accountsServiceProvider).watchAccounts();
 });
 

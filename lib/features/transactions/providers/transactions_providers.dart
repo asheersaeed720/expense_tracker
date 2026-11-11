@@ -1,3 +1,4 @@
+import 'package:expense_tracker/core/providers/supabase_realtime_auth_binding.dart';
 import 'package:expense_tracker/core/models/monthly_stats.dart';
 import 'package:expense_tracker/core/models/transaction_item.dart';
 import 'package:expense_tracker/features/transactions/services/transactions_service.dart';
@@ -9,9 +10,11 @@ final transactionsServiceProvider = Provider<TransactionsService>((ref) {
 
 final recentTransactionsProvider =
     StreamProvider<List<TransactionItem>>((ref) {
+  bindSupabaseRealtimeAuth(ref);
   return ref.watch(transactionsServiceProvider).watchRecentTransactions();
 });
 
 final monthlyStatsProvider = StreamProvider<MonthlyStats>((ref) {
+  bindSupabaseRealtimeAuth(ref);
   return ref.watch(transactionsServiceProvider).watchMonthlyStats();
 });

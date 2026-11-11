@@ -1,3 +1,4 @@
+import 'package:expense_tracker/core/providers/supabase_realtime_auth_binding.dart';
 import 'package:expense_tracker/core/enums/loan_type.dart';
 import 'package:expense_tracker/core/models/loan.dart';
 import 'package:expense_tracker/features/loans/services/loans_service.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final loansServiceProvider = Provider<LoansService>((ref) => LoansService());
 
 final loansProvider = StreamProvider.family<List<Loan>, LoanType>((ref, type) {
+  bindSupabaseRealtimeAuth(ref);
   return ref.watch(loansServiceProvider).watchLoans(type);
 });
 

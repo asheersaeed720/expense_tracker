@@ -1,3 +1,4 @@
+import 'package:expense_tracker/core/providers/supabase_realtime_auth_binding.dart';
 import 'package:expense_tracker/core/enums/company_tx_type.dart';
 import 'package:expense_tracker/core/models/company_ledger.dart';
 import 'package:expense_tracker/core/models/company_transaction.dart';
@@ -10,6 +11,7 @@ final companyServiceProvider = Provider<CompanyService>((ref) {
 });
 
 final companyLedgerProvider = StreamProvider<CompanyLedger?>((ref) {
+  bindSupabaseRealtimeAuth(ref);
   return ref.watch(companyServiceProvider).watchLedger();
 });
 
