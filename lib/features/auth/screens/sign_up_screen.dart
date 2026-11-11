@@ -82,6 +82,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               controller: _nameController,
               label: 'Full name',
               hint: 'Your name',
+              textCapitalization: TextCapitalization.words,
               textInputAction: TextInputAction.next,
               autofillHints: const [AutofillHints.name],
               validator: (v) => Validators.requiredText(v, fieldName: 'Name'),

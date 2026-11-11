@@ -302,6 +302,7 @@ class _TransactionFormScreenState extends ConsumerState<TransactionFormScreen> {
             const SizedBox(height: 8),
             TextFormField(
               controller: _descriptionController,
+              textCapitalization: TextCapitalization.sentences,
               textAlignVertical: TextAlignVertical.top,
               decoration: const InputDecoration(
                 labelText: 'Description (optional)',

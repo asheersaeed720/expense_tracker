@@ -7,6 +7,7 @@ class AuthTextField extends StatelessWidget {
     required this.label,
     this.hint,
     this.keyboardType,
+    this.textCapitalization = TextCapitalization.none,
     this.obscureText = false,
     this.validator,
     this.textInputAction,
@@ -19,6 +20,7 @@ class AuthTextField extends StatelessWidget {
   final String label;
   final String? hint;
   final TextInputType? keyboardType;
+  final TextCapitalization textCapitalization;
   final bool obscureText;
   final String? Function(String?)? validator;
   final TextInputAction? textInputAction;
@@ -43,6 +45,7 @@ class AuthTextField extends StatelessWidget {
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
+          textCapitalization: textCapitalization,
           obscureText: obscureText,
           validator: validator,
           textInputAction: textInputAction,

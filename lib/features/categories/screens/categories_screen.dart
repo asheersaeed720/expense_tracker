@@ -245,6 +245,7 @@ class _CategoryFormSheetState extends State<_CategoryFormSheet> {
             const SizedBox(height: 16),
             TextFormField(
               controller: _nameController,
+              textCapitalization: TextCapitalization.words,
               decoration: const InputDecoration(labelText: 'Name'),
               validator: (v) =>
                   (v == null || v.trim().isEmpty) ? 'Name is required' : null,

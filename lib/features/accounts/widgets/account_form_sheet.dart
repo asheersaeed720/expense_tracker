@@ -88,6 +88,7 @@ class _AccountFormSheetState extends State<AccountFormSheet> {
             const SizedBox(height: 20),
             TextFormField(
               controller: _nameController,
+              textCapitalization: TextCapitalization.words,
               decoration: const InputDecoration(labelText: 'Account name'),
               validator: (v) =>
                   (v == null || v.trim().isEmpty) ? 'Name is required' : null,

@@ -157,6 +157,7 @@ class _LoanFormScreenState extends ConsumerState<LoanFormScreen> {
             if (!widget.isEdit) const SizedBox(height: 16),
             TextFormField(
               controller: _nameController,
+              textCapitalization: TextCapitalization.words,
               decoration: const InputDecoration(labelText: 'Person name'),
               validator: (v) =>
                   (v == null || v.trim().isEmpty) ? 'Name is required' : null,
@@ -234,6 +235,7 @@ class _LoanFormScreenState extends ConsumerState<LoanFormScreen> {
             const SizedBox(height: 8),
             TextFormField(
               controller: _descriptionController,
+              textCapitalization: TextCapitalization.sentences,
               textAlignVertical: TextAlignVertical.top,
               decoration:
                   const InputDecoration(labelText: 'Description (optional)'),

@@ -43,6 +43,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         title: const Text('Edit name'),
         content: TextField(
           controller: controller,
+          textCapitalization: TextCapitalization.words,
           decoration: const InputDecoration(labelText: 'Full name'),
           textInputAction: TextInputAction.done,
         ),
@@ -206,8 +207,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         title: const Text('Fix account balances?'),
         content: const Text(
           'Recalculates each account from its transactions.\n\n'
-          'If Cash in Hand is still wrong, open the Rs. 200 transaction, '
-          'set Account to Bank Account, save, then run this again.',
+          'If a balance still looks wrong, edit transactions on that account '
+          'and make sure each one uses the correct account, then run this again.',
         ),
         actions: [
           TextButton(
