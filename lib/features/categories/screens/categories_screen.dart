@@ -3,6 +3,7 @@ import 'package:expense_tracker/core/enums/category_type.dart';
 import 'package:expense_tracker/core/models/category.dart';
 import 'package:expense_tracker/core/utils/app_snackbar.dart';
 import 'package:expense_tracker/core/utils/icon_name_mapper.dart';
+import 'package:expense_tracker/core/widgets/scaffold_with_fab.dart';
 import 'package:expense_tracker/features/categories/providers/categories_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,7 +23,7 @@ class CategoriesScreen extends ConsumerWidget {
             .toList() ??
         const [];
 
-    return Scaffold(
+    return ScaffoldWithFab(
       appBar: AppBar(title: const Text('Categories')),
       floatingActionButton: FloatingActionButton(
         heroTag: 'fab-categories',

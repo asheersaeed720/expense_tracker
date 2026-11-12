@@ -7,6 +7,7 @@ import 'package:expense_tracker/core/utils/currency_formatter.dart';
 import 'package:expense_tracker/core/utils/date_formatter.dart';
 import 'package:expense_tracker/core/widgets/app_empty_state.dart';
 import 'package:expense_tracker/core/widgets/app_shimmer_list.dart';
+import 'package:expense_tracker/core/widgets/scaffold_with_fab.dart';
 import 'package:expense_tracker/features/accounts/providers/accounts_providers.dart';
 import 'package:expense_tracker/features/company/company_categories.dart';
 import 'package:expense_tracker/features/company/models/company_tx_filters.dart';
@@ -64,7 +65,7 @@ class CompanyTransactionsScreen extends ConsumerWidget {
     final async = ref.watch(companyTransactionsProvider);
     final currency = ref.watch(profileProvider).valueOrNull?.currency ?? 'PKR';
 
-    return Scaffold(
+    return ScaffoldWithFab(
       appBar: AppBar(title: const Text('Company transactions')),
       floatingActionButton: FloatingActionButton(
         heroTag: 'fab-company-transactions',

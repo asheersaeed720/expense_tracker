@@ -3,6 +3,7 @@ import 'package:expense_tracker/core/utils/app_haptics.dart';
 import 'package:expense_tracker/core/utils/app_snackbar.dart';
 import 'package:expense_tracker/core/widgets/app_empty_state.dart';
 import 'package:expense_tracker/core/widgets/app_shimmer_list.dart';
+import 'package:expense_tracker/core/widgets/scaffold_with_fab.dart';
 import 'package:expense_tracker/features/accounts/providers/accounts_providers.dart';
 import 'package:expense_tracker/features/transactions/providers/transactions_list_provider.dart';
 import 'package:expense_tracker/features/transactions/providers/transactions_providers.dart';
@@ -46,6 +47,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
 
   Future<void> _openAdd() async {
     await AppHaptics.light();
+    if (!mounted) return;
     final created = await context.push<bool>(RoutePaths.transactionForm);
     if (created == true && mounted) {
       await ref.read(transactionsListProvider.notifier).refresh();
@@ -59,14 +61,8 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         title: const Text('Delete transaction?'),
         content: const Text('This cannot be undone.'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Delete')),
         ],
       ),
     );
@@ -96,7 +92,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
     final currency = ref.watch(profileProvider).valueOrNull?.currency ?? 'PKR';
     final groups = TransactionGrouper.groupByDay(listState.items);
 
-    return Scaffold(
+    return ScaffoldWithFab(
       appBar: AppBar(title: const Text('Transactions')),
       floatingActionButton: FloatingActionButton(
         heroTag: 'fab-transactions',
@@ -125,8 +121,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                           isDense: true,
                         ),
                         onChanged: (value) {
-                          ref.read(transactionFiltersProvider.notifier).state =
-                              filters.copyWith(
+                          ref.read(transactionFiltersProvider.notifier).state = filters.copyWith(
                             searchQuery: value.trim().isEmpty ? null : value.trim(),
                             clearSearch: value.trim().isEmpty,
                           );
@@ -140,19 +135,15 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                       child: TransactionFiltersBar(
                         filters: filters,
                         accounts: accounts,
-                        onChanged: (next) => ref
-                            .read(transactionFiltersProvider.notifier)
-                            .state = next,
+                        onChanged: (next) =>
+                            ref.read(transactionFiltersProvider.notifier).state = next,
                       ),
                     ),
                   ),
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-                      child: TransactionSummaryHeader(
-                        totals: listState.totals,
-                        currency: currency,
-                      ),
+                      child: TransactionSummaryHeader(totals: listState.totals, currency: currency),
                     ),
                   ),
                   if (listState.items.isEmpty)
@@ -173,40 +164,35 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                           padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
                           child: Text(
                             group.heading,
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                         ),
                       );
                       yield SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            final item = group.items[index];
-                            return Dismissible(
-                              key: ValueKey(item.id),
-                              direction: DismissDirection.endToStart,
-                              background: Container(
-                                color: Theme.of(context).colorScheme.error,
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.only(right: 20),
-                                child: const Icon(Icons.delete_outline, color: Colors.white),
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final item = group.items[index];
+                          return Dismissible(
+                            key: ValueKey(item.id),
+                            direction: DismissDirection.endToStart,
+                            background: Container(
+                              color: Theme.of(context).colorScheme.error,
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 20),
+                              child: const Icon(Icons.delete_outline, color: Colors.white),
+                            ),
+                            confirmDismiss: (_) => _confirmDelete(item.id),
+                            child: Card(
+                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                              child: TransactionListTile(
+                                item: item,
+                                currency: currency,
+                                onTap: () =>
+                                    context.push(RoutePaths.transactionDetailPath(item.id)),
                               ),
-                              confirmDismiss: (_) => _confirmDelete(item.id),
-                              child: Card(
-                                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                                child: TransactionListTile(
-                                  item: item,
-                                  currency: currency,
-                                  onTap: () => context.push(
-                                    RoutePaths.transactionDetailPath(item.id),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          childCount: group.items.length,
-                        ),
+                            ),
+                          );
+                        }, childCount: group.items.length),
                       );
                     }),
                   if (listState.isLoadingMore)

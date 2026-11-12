@@ -4,6 +4,7 @@ import 'package:expense_tracker/core/utils/currency_formatter.dart';
 import 'package:expense_tracker/core/utils/icon_name_mapper.dart';
 import 'package:expense_tracker/core/widgets/app_empty_state.dart';
 import 'package:expense_tracker/core/widgets/app_shimmer_list.dart';
+import 'package:expense_tracker/core/widgets/scaffold_with_fab.dart';
 import 'package:expense_tracker/features/accounts/providers/accounts_providers.dart';
 import 'package:expense_tracker/features/accounts/widgets/account_form_sheet.dart';
 import 'package:expense_tracker/features/accounts/widgets/transfer_sheet.dart';
@@ -152,7 +153,7 @@ class AccountsScreen extends ConsumerWidget {
     final profile = ref.watch(profileProvider).valueOrNull;
     final currency = profile?.currency ?? 'PKR';
 
-    return Scaffold(
+    return ScaffoldWithFab(
       appBar: AppBar(
         title: const Text('Accounts'),
         actions: [

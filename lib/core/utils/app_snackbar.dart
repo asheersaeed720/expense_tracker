@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 
-EdgeInsets _floatingSnackBarMargin(BuildContext context) {
-  const horizontal = 16.0;
-  const gapAboveFab = 12.0;
-
-  var bottom = 16.0 + MediaQuery.paddingOf(context).bottom;
-
-  final scaffold = context.findAncestorWidgetOfExactType<Scaffold>();
-  if (scaffold?.floatingActionButton != null) {
-    bottom += kFloatingActionButtonMargin +
-        kMinInteractiveDimension +
-        gapAboveFab;
-  }
-
-  return EdgeInsets.fromLTRB(horizontal, 0, horizontal, bottom);
-}
+/// End padding keeps the message clear of the 56px button that paints over the bar.
+const EdgeInsetsDirectional _snackBarPadding = EdgeInsetsDirectional.only(
+  start: 16,
+  top: 14,
+  end: 72,
+  bottom: 14,
+);
 
 void showAppSnackBar(
   BuildContext context, {
@@ -30,7 +22,8 @@ void showAppSnackBar(
           ? Theme.of(context).colorScheme.error
           : Theme.of(context).colorScheme.primary.withValues(alpha: 0.9),
       behavior: SnackBarBehavior.floating,
-      margin: _floatingSnackBarMargin(context),
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      padding: _snackBarPadding,
     ),
   );
 }

@@ -1,5 +1,6 @@
 import 'package:expense_tracker/config/router/route_paths.dart';
 import 'package:expense_tracker/core/enums/loan_type.dart';
+import 'package:expense_tracker/core/widgets/scaffold_with_fab.dart';
 import 'package:expense_tracker/features/accounts/providers/accounts_providers.dart';
 import 'package:expense_tracker/features/loans/providers/loans_providers.dart';
 import 'package:expense_tracker/features/loans/widgets/loan_card.dart';
@@ -46,7 +47,7 @@ class _LoansScreenState extends ConsumerState<LoansScreen>
   Widget build(BuildContext context) {
     final currency = ref.watch(profileProvider).valueOrNull?.currency ?? 'PKR';
 
-    return Scaffold(
+    return ScaffoldWithFab(
       appBar: AppBar(
         title: const Text('Loans'),
         bottom: TabBar(
